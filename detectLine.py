@@ -46,8 +46,8 @@ while True:
 
     #timer for reset error_i
     #if time.time()-start_time >= 0.1:
-    #    error_i = 0
-    #    start_time = time.time()
+    #error_i = 0
+    #start_time = time.time()
 
     #PID control for motor_rpm
     if cX > 0:
