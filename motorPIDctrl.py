@@ -35,6 +35,7 @@ DXL_ID                      = [1,2]             # Dynamixel ID
 BAUDRATE                    = 57600             # Dynamixel default baudrate : 57600
 DEVICENAME                  = '/dev/ttyUSB0'    # Check which port is being used on your controller
                                                 # ex) Windows: "COM1"   Linux: "/dev/ttyUSB0" Mac: "/dev/tty.usbserial-*"
+CAMERANAME                  = 0                 # check which port is being used on your controller
 
 TORQUE_ENABLE               = 1
 TORQUE_DISABLE              = 0
@@ -107,7 +108,7 @@ def turnright(num):
     packetHandler.write2ByteTxRx(port_handler, DXL_ID[1], ADDR_GOAL_PWM, num)
 
 #open camera
-cap = cv2.VideoCapture(0)
+cap = cv2.VideoCapture(CAMERANAME)
 if not cap.isOpened():
     print('Camera Open Failed..!')
     exit()
