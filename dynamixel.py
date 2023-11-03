@@ -160,9 +160,9 @@ while 1:
     else:
         # dxl_comm_result, dxl_error = packetHandler.write4ByteTxRx(portHandler, DXL_ID, ADDR_GOAL_POSITION, dxl_goal_position[index])
         # # # # # # # # # # # # # # # # 
-        dxl_comm_result, dxl_error = packetHandler.write4ByteTxRx(portHandler, DXL_ID, 104, 10)
+        dxl_comm_result, dxl_error = packetHandler.write4ByteTxRx(portHandler, DXL_ID, 104, 10) #104 : ADDR_GOAL_VELOCITY, 10 : goal velocityn value
         # # # # # # # # # # # # # # # #
-        print('goal vel to 10')
+        print('goal velocity : 10')
     if dxl_comm_result != COMM_SUCCESS:
         print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
     elif dxl_error != 0:
