@@ -31,7 +31,7 @@ ADDR_GOAL_PWM               = 100
 PROTOCOL_VERSION            = 2.0               # See which protocol version is used in the Dynamixel
 
 # Default setting
-DXL_ID                      = [1,2]             # Dynamixel ID
+DXL_ID                      = [0,1]             # Dynamixel ID
 BAUDRATE                    = 57600             # Dynamixel default baudrate : 57600
 DEVICENAME                  = '/dev/ttyUSB0'    # Check which port is being used on your controller
                                                 # ex) Windows: "COM1"   Linux: "/dev/ttyUSB0" Mac: "/dev/tty.usbserial-*"
@@ -92,7 +92,7 @@ for i in range(0,1):
 
     
 #define motor control function
-#뒤쪽에서 보았을 때 왼쪽모터 : DXL_ID1, 오른쪽모터 : DXL_ID2
+#뒤쪽에서 보았을 때 왼쪽모터 : DXL_ID0, 오른쪽모터 : DXL_ID1
 #두 모터 다 DRIVE_MODE : NORMAL_MODE(반시계방향(CCW)이 양수값, 시계방향(CW)이 음수값)으로 설정되어 있음
 def goahead(num):
     error_i = 0 #방향을 잡으면 에러 누적값을 초기화
