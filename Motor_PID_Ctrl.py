@@ -21,19 +21,19 @@ else:
 
 DXL = Motor_Controller()
 
-CAMERANAME = 0  # Laptop webcam : 0(default value)
+CAMERANAME = "/dev/video0" # Laptop webcam : 0(default value)
 DEFAULT_VELOCITY = 200 # Need tuning
 
 # Open camera
-cap = cv2.VideoCapture(CAMERANAME)
+cap = cv2.VideoCapture(CAMERANAME, cv2.CAP_V4L)
 if not cap.isOpened():
     print('Camera Open Failed..!')
     exit()
 
 # PID Gain -> need tuning
-Kp = 1.0
-Ki = 0.5
-Kd = 1.0
+Kp = 0.5
+Ki = 0
+Kd = 0
 
 error_b = 0
 error_i = 0
@@ -62,34 +62,60 @@ while True:
             cX = int(M['m10']/M['m00'])
             cY = int(M['m01']/M['m00'])
             cv2.circle(frame_lr, (cX, cY), 2, (0, 255, 255), -1)
+
+            error_p = w/2-cX
+            error_i += error_p
+            # To prevent error_i becoming too large
+            if abs(error_p) <= 5:
+                error_i = 0
+            error_d = error_b-error_p
+            error_control = Kp*error_p + Ki*error_i + Kd*error_d
+            error_b = error_p
+            print('error : %d       error_control : %d' %(error_p, error_control))
+            
+            right_vel = int(-(DEFAULT_VELOCITY + error_control))
+            left_vel  = int(DEFAULT_VELOCITY - error_control)
+            print('right_vel : %d       left_vel : %d' %(right_vel, left_vel))
+            DXL.Dual_MotorController(right_vel, left_vel)
+        else :
+            DXL.Dual_MotorController(0,0)
+
     cv2.imshow('frame_lr', frame_lr) #orignal frame(fliped) + contours + centroid
     cv2.imshow('frame_thresh', thresh1)
 
-    # PID control for velocity
-    if cX > 0:
-        error_p = w/2-cX
-        error_i += error_p
+    # # PID control for velocity
+    # if cX > 0:
+    #     error_p = w/2-cX
+    #     error_i += error_p
 
-        # To prevent error_i becoming too large
-        if abs(error_p) <= 5:
-            error_i = 0
+    #     # To prevent error_i becoming too large
+    #     if abs(error_p) <= 5:
+    #         error_i = 0
 
-        error_d = error_b-error_p
-        error_control = Kp*error_p + Ki*error_i + Kd*error_d
-        error_b = error_p
-        print('error : %d       error_control : %d' %(error_p, error_control))
+    #     error_d = error_b-error_p
+    #     error_control = Kp*error_p + Ki*error_i + Kd*error_d
+    #     error_b = error_p
+    #     print('error : %d       error_control : %d' %(error_p, error_control))
 
-        # Call MotorController function
-        # Both Motors' DRIVE_MODE : NORMAL_MODE(CCW : Positive, CW : Negative)
-        DXL.MotorController(DXL.RIGHT_ID, -(DEFAULT_VELOCITY + error_control))
-        DXL.MotorController(DXL.LEFT_ID, (DEFAULT_VELOCITY - error_control))
+    #     # Call MotorController function
+    #     # Both Motors' DRIVE_MODE : NORMAL_MODE(CCW : Positive, CW : Negative)
+    #     print('right : ',int(-(DEFAULT_VELOCITY + error_control)))
+    #     print('LEFT : ', int(DEFAULT_VELOCITY - error_control))
+    #     # DXL.MotorController(DXL.RIGHT_ID, int(-(DEFAULT_VELOCITY + error_control)))
+    #     # DXL.MotorController(DXL.LEFT_ID, int(DEFAULT_VELOCITY - error_control))
+    #     DXL.MotorController(DXL.RIGHT_ID, int(error_p))
+    #     DXL.MotorController(DXL.LEFT_ID, -int(error_p))
 
-    if cv2.waitKey(10) == 27:
+
+    if cv2.waitKey(10) == ord('q'):
+        DXL.Dual_MotorController(0,0)
         break
 
 # Close camera
 cap.release()
 cv2.destroyAllWindows()
+DXL.MotorController(DXL.RIGHT_ID, 0)
+DXL.MotorController(DXL.LEFT_ID, 0)
 
 # Disable torque on Motor & Close Port
 DXL.Unconnect_Motor()
