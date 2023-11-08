@@ -37,7 +37,7 @@ class Motor_Controller:
         self.ADDR_PRESENT_VELOCITY       = 128               # Present Velocity Address @ 128
 
         self.RIGHT_ID                    = 0                 # Dynamixel#1 ID : 0
-        self.LEFT_ID                     = 1                 # Dynamixel#1 ID : 1
+        self.LEFT_ID                     = 1                 # Dynamixel#2 ID : 1
 
         self.TARGET_VEL                  = 0                 # Target Velocity Value
         self.MAXIMUM_VELOCITY            = 1023              # Velocity MAX limit
@@ -107,6 +107,23 @@ class Motor_Controller:
             # use threshold value instead of DXL_MINIMUM_POSITION_VALUE_FOR_MOVING
             if abs(present_velocity - target_velocity) <= self.ERROR_THRESHOLD:
                 break
+
+    def Unconnect_Motor(self):
+        dxl_comm_result, dxl_error = self.packetHandler.write1ByteTxRx(self.portHandler, self.RIGHT_ID, self.ADDR_TORQUE_ENABLE, self.TORQUE_DISABLE) # Add closing parenthesis and store return values
+        if dxl_comm_result != COMM_SUCCESS: # Check communication result
+            print("%s" % self.packetHandler.getTxRxResult(dxl_comm_result))
+        elif dxl_error != 0: # Check error code
+            print("%s" % self.packetHandler.getRxPacketError(dxl_error))
+        print("Dynamixel#%d has been successfully disconnected" % self.RIGHT_ID)
+
+        dxl_comm_result, dxl_error = self.packetHandler.write1ByteTxRx(self.portHandler, self.LEFT_ID, self.ADDR_TORQUE_ENABLE, self.TORQUE_DISABLE) # Add closing parenthesis and store return values
+        if dxl_comm_result != COMM_SUCCESS: # Check communication result
+            print("%s" % self.packetHandler.getTxRxResult(dxl_comm_result))
+        elif dxl_error != 0: # Check error code
+            print("%s" % self.packetHandler.getRxPacketError(dxl_error))
+        print("Dynamixel#%d has been successfully disconnected" % self.LEFT_ID)
+
+        self.portHandler.closePort()
 
 if __name__=="__main__":
 
