@@ -22,7 +22,7 @@ else:
 DXL = Motor_Controller()
 
 CAMERANAME = "/dev/video0" # Laptop webcam : 0(default value)
-DEFAULT_VELOCITY = 200 # Need tuning
+DEFAULT_VELOCITY = 100 # Need tuning
 
 # Open camera
 cap = cv2.VideoCapture(CAMERANAME, cv2.CAP_V4L)
@@ -77,8 +77,8 @@ while True:
             error_b = error_p
             print('error : %d       error_control : %d' %(error_p, error_control))
             
-            left_vel  = int(DEFAULT_VELOCITY - error_control)
-            right_vel = int(-(DEFAULT_VELOCITY + error_control))
+            left_vel  = int(DEFAULT_VELOCITY + error_control)
+            right_vel = int(-(DEFAULT_VELOCITY - error_control))
             print('left_vel : %d       right_vel : %d' %(left_vel, right_vel))
             DXL.Dual_MotorController(left_vel, right_vel)
         else :
