@@ -41,15 +41,13 @@ error_i = 0
 cX = 0
 cY = 0
 
-# Detect line
+# Detect line & red object
 while True:
+
+    # Detect line
     ret, frame = cap.read()
     frame_lr = cv2.flip(frame,1)
     h,w = frame_lr.shape[:2]
-
-    #print('h = %d   w = %d' %(h,w))
-    #frame_crop = frame_lr[int(h*3/4):h, 0:w]
-
     cv2.circle(frame_lr, (int(w/2),int(h/2)), 2, (0,255,255),-1)
 
     frame_gray = cv2.cvtColor(frame_lr,cv2.COLOR_BGR2GRAY)
@@ -57,12 +55,7 @@ while True:
     ret, thresh1 = cv2.threshold(frame_blur,123,255,cv2.THRESH_BINARY_INV)
     contours, _ = cv2.findContours(thresh1, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
 
-    #frame_hsv = cv2.cvtColor(frame,cv2.COLOR_BGR2HSV)
-    #mask_red = cv2.inRange(frame_hsv, (160,100,100), (160,255,255)) #HSV순서-빨간색 검출, S(선명도)를 조작해 살색 검출 제한
-    #ㄴinRange함수를 사용한 mask영상은 이진화 영상이다.
-    # frame_red = cv2.bitwise_and(frame_lr_shine,frame_lr_shine,mask = mask_red)
-    #ㄴ원본 영상과 mask에 대해 and연산을 수행해 1인 곳만(빨간색인 곳만) 살리고 나머지는 0(검은색)으로 표시 
-    
+    # Detect red object
     img_hsv=cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
     lower_red = np.array([170,50,50]) #example value
     upper_red = np.array([180,255,255]) #example value
@@ -82,9 +75,11 @@ while True:
 
             error_p = w/2-cX
             error_i += error_p
+
             # To prevent error_i becoming too large
             if abs(error_p) <= 5:
                 error_i = 0
+
             error_d = error_b-error_p
             error_control = Kp*error_p + Ki*error_i + Kd*error_d
             error_b = error_p
@@ -100,8 +95,8 @@ while True:
                 DXL.Dual_MotorController(0, 0)
                 time.sleep(0.5)
                 DXL.Dual_MotorController(100, -100)
-                time.sleep(3)
-                continue
+                time.sleep(3)                               # we need delay to escape from red object
+                continue                                    # if we use 'break' instead of 'continue', loop will be stopped..!
 
         else :
             DXL.Dual_MotorController(0,0)
@@ -141,8 +136,6 @@ while True:
 # Close camera
 cap.release()
 cv2.destroyAllWindows()
-DXL.MotorController(DXL.RIGHT_ID, 0)
-DXL.MotorController(DXL.LEFT_ID, 0)
 
 # Disable torque on Motor & Close Port
 DXL.Unconnect_Motor()
