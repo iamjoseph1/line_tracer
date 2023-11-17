@@ -77,10 +77,10 @@ while True:
             error_b = error_p
             print('error : %d       error_control : %d' %(error_p, error_control))
             
-            right_vel = int(-(DEFAULT_VELOCITY + error_control))
             left_vel  = int(DEFAULT_VELOCITY - error_control)
-            print('right_vel : %d       left_vel : %d' %(right_vel, left_vel))
-            DXL.Dual_MotorController(right_vel, left_vel)
+            right_vel = int(-(DEFAULT_VELOCITY + error_control))
+            print('left_vel : %d       right_vel : %d' %(left_vel, right_vel))
+            DXL.Dual_MotorController(left_vel, right_vel)
         else :
             DXL.Dual_MotorController(0,0)
 
