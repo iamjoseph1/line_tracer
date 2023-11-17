@@ -36,8 +36,8 @@ class Motor_Controller:
         self.ADDR_GOAL_VELOCITY          = 104               # Goal Velocity Address @ 104
         self.ADDR_PRESENT_VELOCITY       = 128               # Present Velocity Address @ 128
 
-        self.RIGHT_ID                    = 0                 # Dynamixel#1 ID : 0
-        self.LEFT_ID                     = 1                 # Dynamixel#2 ID : 1
+        self.LEFT_ID                     = 0                 # Dynamixel#1 ID : 0
+        self.RIGHT_ID                    = 1                 # Dynamixel#2 ID : 1
 
         self.TARGET_VEL                  = 0                 # Target Velocity Value
         self.MAXIMUM_VELOCITY            = 1023              # Velocity MAX limit
@@ -110,8 +110,8 @@ class Motor_Controller:
 
     def Dual_MotorController(self, left_vel, right_vel):
         # Write goal velocity to motor @ id
-        self.write_goal_velocity(0, right_vel)
-        self.write_goal_velocity(1, left_vel)
+        self.write_goal_velocity(0, left_vel)
+        self.write_goal_velocity(1, right_vel)
 
         # # Wait until motors reach goal velocity
         # while True:
@@ -146,8 +146,8 @@ class Motor_Controller:
 
 if __name__=="__main__":
 
-    RIGHT_ID                    = 0                 # Dynamixel#1 ID : 0
-    LEFT_ID                     = 1                 # Dynamixel#1 ID : 1
+    LEFT_ID                      = 0                 # Dynamixel#1 ID : 0
+    RIGHT_ID                     = 1                 # Dynamixel#1 ID : 1
     
     DXL = Motor_Controller()
 
