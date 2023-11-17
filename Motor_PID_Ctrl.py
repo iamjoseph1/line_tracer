@@ -46,6 +46,10 @@ while True:
     ret, frame = cap.read()
     frame_lr = cv2.flip(frame,1)
     h,w = frame_lr.shape[:2]
+
+    #print('h = %d   w = %d' %(h,w))
+    #frame_crop = frame_lr[int(h*3/4):h, 0:w]
+
     cv2.circle(frame_lr, (int(w/2),int(h/2)), 2, (0,255,255),-1)
 
     frame_gray = cv2.cvtColor(frame_lr,cv2.COLOR_BGR2GRAY)
