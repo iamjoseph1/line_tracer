@@ -57,6 +57,14 @@ while True:
     ret, thresh1 = cv2.threshold(frame_blur,123,255,cv2.THRESH_BINARY_INV)
     contours, _ = cv2.findContours(thresh1, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
 
+    frame_hsv = cv2.cvtColor(frame_lr,cv2.COLOR_BGR2HSV)
+    mask_red = cv2.inRange(frame_hsv, (160,128,128), (180,255,255)) #HSV순서-빨간색 검출, S(선명도)를 조작해 살색 검출 제한
+    #ㄴinRange함수를 사용한 mask영상은 이진화 영상이다.
+    # frame_red = cv2.bitwise_and(frame_lr_shine,frame_lr_shine,mask = mask_red)
+    #ㄴ원본 영상과 mask에 대해 and연산을 수행해 1인 곳만(빨간색인 곳만) 살리고 나머지는 0(검은색)으로 표시 
+    red_contours, red_ = cv2.findContours(mask_red, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+    
+
     if len(contours) > 0:
         cmax = max(contours,key=cv2.contourArea)
         cv2.drawContours(frame_lr, contours, -1, (0,255,255), 1 )
@@ -81,6 +89,14 @@ while True:
             right_vel = int(-(DEFAULT_VELOCITY + error_control))
             print('left_vel : %d       right_vel : %d' %(left_vel, right_vel))
             DXL.Dual_MotorController(left_vel, right_vel)
+
+            if len(red_contours) > 0:
+                print('red detected, STOP')
+                DXL.Dual_MotorController(0, 0)
+                time.sleep(3)
+                DXL.Dual_MotorController(100, 100)
+                break
+
         else :
             DXL.Dual_MotorController(0,0)
 
