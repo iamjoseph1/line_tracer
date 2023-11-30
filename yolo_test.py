@@ -16,7 +16,7 @@ def load_model():
     ## loading the custom trained model
     # model =  torch.hub.load('ultralytics/yolov5', 'custom', path='last.pt',force_reload=True) ## if you want to download the git repo and then run the detection
     model =  torch.hub.load('path_to_yolov5_folder', 'custom', source ='local', 
-                            path='path_to_best_v2.pt',force_reload=True)
+                            path='path_to_best_v2.pt',force_reload=True)    #best_v2.pt should be in 'yolov5' folder
     classes = model.names ### class names in string
     
     return model, classes
