@@ -88,16 +88,7 @@ while True:
 
     # Frame setting
     ret, frame = cap.read()
-    frame = cv2.resize(frame, (160, 120))
-    
-    
-    frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
-
-    # Detect line
-    frame_gray = cv2.cvtColor(frame,cv2.COLOR_BGR2GRAY)
-    frame_blur = cv2.GaussianBlur(frame_gray,(5,5),0)
-    ret, thresh1 = cv2.threshold(frame_blur,123,255,cv2.THRESH_BINARY_INV)
-    contours, _ = cv2.findContours(thresh1, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+    frame = cv2.resize(frame, (160, 120))    
 
     now_time = time.time()
     if (now_time - start_time) >= fpslimit:
@@ -105,10 +96,13 @@ while True:
         frame = cv2.flip(frame,1)
         h,w = frame.shape[:2]
         #cv2.circle(frame, (int(w/2),int(h/2)), 2, (0,255,255),-1)
-        
-        
-        
-        
+
+        # Detect line
+        frame_gray = cv2.cvtColor(frame,cv2.COLOR_BGR2GRAY)
+        frame_blur = cv2.GaussianBlur(frame_gray,(5,5),0)
+        ret, thresh1 = cv2.threshold(frame_blur,123,255,cv2.THRESH_BINARY_INV)
+        contours, _ = cv2.findContours(thresh1, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+            
         # Control Motors
         if len(contours) > 0 and stop_count!=1:
             yolo_frame = cv2.cvtColor(frame,cv2.COLOR_BGR2RGB)
@@ -137,10 +131,15 @@ while True:
                 right_vel = int(-(DEFAULT_VELOCITY - error_control))
                 print('left_vel : %d       right_vel : %d' %(left_vel, right_vel))
 
+                if time.time()-timer_slow < 3 and count_slow > 0:                   # To prevent it from going slowly for the first 3 seconds 
+                    DXL.Dual_MotorController(int(left_vel/2), int(right_vel/2))
+                else:
+                    DXL.Dual_MotorController(left_vel, right_vel)
 
                 
                 # Detect objects
                 labels, cord = detect_(yolo_frame, model = model)
+
                 # Detect only one object at a time (highest confidence score)
                 if len(labels):
                     confidence = cord[:, -1]
@@ -195,13 +194,9 @@ while True:
                     time.sleep(0.5)
                     stop_count = 2
 
-                if time.time()-timer_slow < 3 and count_slow > 0:                   # To prevent it from going slowly for the first 3 seconds 
-                    DXL.Dual_MotorController(int(left_vel/2), int(right_vel/2))
-                else:
-                    DXL.Dual_MotorController(left_vel, right_vel)
-
             else :
                 DXL.Dual_MotorController(0,0)
+                
         start_time = time.time()
     #cv2.imshow('frame', frame)                  # orignal frame(fliped) with contours + centroid + objects
     cv2.imshow('frame_thresh', thresh1)         # binary frame with line
