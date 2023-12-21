@@ -63,7 +63,7 @@ if not cap.isOpened():
     exit()
 
 # PID Gain -> need tuning
-Kp = 0.1
+Kp = 0.3
 Ki = 0
 Kd = 0
 
@@ -81,7 +81,7 @@ count_slow = 0
 stop_count = 0
 
 
-fpslimit = 1
+fpslimit = 1.5
 start_time = time.time()
 # Detect line & objects
 while True:
@@ -89,18 +89,20 @@ while True:
     # Frame setting
     ret, frame = cap.read()
     frame = cv2.resize(frame, (160, 120))    
+        
+    frame = cv2.flip(frame,1)
+    #frame = frame[80:160,0:120]
+    h,w = frame.shape[:2]
+    #cv2.circle(frame, (int(w/2),int(h/2)), 2, (0,255,255),-1)
+
+    # Detect line
+    frame_gray = cv2.cvtColor(frame,cv2.COLOR_BGR2GRAY)
+    frame_blur = cv2.GaussianBlur(frame_gray,(5,5),0)
+    ret, thresh1 = cv2.threshold(frame_blur,100,255,cv2.THRESH_BINARY_INV)
 
     now_time = time.time()
     if (now_time - start_time) >= fpslimit:
-    
-        frame = cv2.flip(frame,1)
-        h,w = frame.shape[:2]
-        #cv2.circle(frame, (int(w/2),int(h/2)), 2, (0,255,255),-1)
 
-        # Detect line
-        frame_gray = cv2.cvtColor(frame,cv2.COLOR_BGR2GRAY)
-        frame_blur = cv2.GaussianBlur(frame_gray,(5,5),0)
-        ret, thresh1 = cv2.threshold(frame_blur,123,255,cv2.THRESH_BINARY_INV)
         contours, _ = cv2.findContours(thresh1, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
             
         # Control Motors
@@ -156,11 +158,11 @@ while True:
                         #cv2.putText(frame, text_d + f" {round(float(row[4]),2)}", (x1, y1), cv2.FONT_HERSHEY_SIMPLEX, 0.7,(255,255,255), 2)
 
                         if text_d == 'left':
-                            DXL.Dual_MotorController(-100, -100)
+                            DXL.Dual_MotorController(-20, -20)
                             time.sleep(1)
 
                         elif text_d == 'right':
-                            DXL.Dual_MotorController(100, 100)
+                            DXL.Dual_MotorController(20, 20)
                             time.sleep(1)
 
                         elif text_d == 'stop' and stop_count == 0: #and time.time()-timer_stop >= 3:      # to escape from 'stop' sign
@@ -175,7 +177,7 @@ while True:
                                 #continue
 
                         elif text_d == 'uturn':
-                            DXL.Dual_MotorController(-100, -100)
+                            DXL.Dual_MotorController(-20, -20)
                             time.sleep(3)
 
                         elif text_d == 'slow' and time.time()-timer_slow >= 3:
@@ -190,8 +192,6 @@ while True:
                     print("STOPPPPPPPPP")
                     DXL.Dual_MotorController(0,0)
                     time.sleep(2)
-                    DXL.Dual_MotorController(50,50)
-                    time.sleep(0.5)
                     stop_count = 2
 
             else :
