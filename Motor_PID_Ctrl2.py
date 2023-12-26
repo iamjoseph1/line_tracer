@@ -5,7 +5,7 @@ import torch
 from Motor_Control import *
 #from yolo_test import *
 
-################################
+###############################
 def load_model():
     print(f"[INFO] Loading model... ")
     ## loading the custom trained model
