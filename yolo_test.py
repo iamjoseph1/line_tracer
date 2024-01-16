@@ -53,40 +53,26 @@ def plot_boxes(results, frame,classes):
                 cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
                 cv2.rectangle(frame, (x1, y1-20), (x2, y1), (0, 255,0), -1)
                 cv2.putText(frame, text_d + f" {round(float(row[4]),2)}", (x1, y1), cv2.FONT_HERSHEY_SIMPLEX, 0.7,(255,255,255), 2)
-                # DXL.Dual_MotorController(-100, -100)
-                # time.sleep(1)
-
+            
             elif text_d == 'right':
                 cv2.rectangle(frame, (x1, y1), (x2, y2), (255, 0, 0), 2)
                 cv2.rectangle(frame, (x1, y1-20), (x2, y1), (255, 0, 0), -1)
                 cv2.putText(frame, text_d + f" {round(float(row[4]),2)}", (x1, y1), cv2.FONT_HERSHEY_SIMPLEX, 0.7,(255,255,255), 2)
-                # DXL.Dual_MotorController(100, 100)
-                # time.sleep(1)
 
             elif text_d == 'stop':
                 cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 0,255), 2)
                 cv2.rectangle(frame, (x1, y1-20), (x2, y1), (0, 0,255), -1)
                 cv2.putText(frame, text_d + f" {round(float(row[4]),2)}", (x1, y1), cv2.FONT_HERSHEY_SIMPLEX, 0.7,(255,255,255), 2)
-                # DXL.Dual_MotorController(0, 0)
-                # time.sleep(1)
-                # DXL.Dual_MotorController(100, -100)
-                # time.sleep(3)
-            
+
             elif text_d == 'uturn':
                 cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255,255), 2)
                 cv2.rectangle(frame, (x1, y1-20), (x2, y1), (0, 255,255), -1)
                 cv2.putText(frame, text_d + f" {round(float(row[4]),2)}", (x1, y1), cv2.FONT_HERSHEY_SIMPLEX, 0.7,(255,255,255), 2)
-                # DXL.Dual_MotorController(-100, -100)
-                # time.sleep(3)
             
             elif text_d == 'slow':
                 cv2.rectangle(frame, (x1, y1), (x2, y2), (255, 255,0), 2)
                 cv2.rectangle(frame, (x1, y1-20), (x2, y1), (255, 255,0), -1)
                 cv2.putText(frame, text_d + f" {round(float(row[4]),2)}", (x1, y1), cv2.FONT_HERSHEY_SIMPLEX, 0.7,(255,255,255), 2)
-                # DXL.Dual_MotorController(50, -50)
-                # time.sleep(3)
-
-            ## print(row[4], type(row[4]),int(row[4]), len(text_d))
 
     return frame
 
