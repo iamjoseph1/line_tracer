@@ -28,9 +28,7 @@ def detect_(frame, model):
     labels, cordinates = results.xyxyn[0][:, -1], results.xyxyn[0][:, :-1]
 
     return labels, cordinates
-
 ###############################
-
 
 if os.name == 'nt':
     import msvcrt
