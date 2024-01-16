@@ -113,19 +113,6 @@ class Motor_Controller:
         self.write_goal_velocity(0, left_vel)
         self.write_goal_velocity(1, right_vel)
 
-        # # Wait until motors reach goal velocity
-        # while True:
-        #     # Read present velocity from motors
-        #     R_present_velocity = self.read_present_velocity(0)
-        #     L_present_velocity = self.read_present_velocity(1)
-
-        #     # # Print current positions of the motors
-        #     # print("[ID:%03d] GoalVel:%03d PresentVel:%03d" \
-        #     #     % (id, target_velocity, present_velocity))
-            
-        #     # use threshold value instead of DXL_MINIMUM_POSITION_VALUE_FOR_MOVING
-        #     if abs(R_present_velocity - right_vel) <= self.ERROR_THRESHOLD and abs(L_present_velocity - left_vel) <= self.ERROR_THRESHOLD:
-        #         break
 
     def Unconnect_Motor(self):
         dxl_comm_result, dxl_error = self.packetHandler.write1ByteTxRx(self.portHandler, self.RIGHT_ID, self.ADDR_TORQUE_ENABLE, self.TORQUE_DISABLE) # Add closing parenthesis and store return values
